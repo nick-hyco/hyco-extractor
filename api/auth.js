@@ -1,5 +1,3 @@
-export const config = { runtime: 'edge' };
-
 export default async function handler(req) {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
@@ -13,7 +11,7 @@ export default async function handler(req) {
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
   if (!correctPassword || !anthropicKey) {
-    return new Response(JSON.stringify({ error: 'Server not configured. Add TOOL_PASSWORD and ANTHROPIC_API_KEY in Vercel environment variables.' }), {
+    return new Response(JSON.stringify({ error: 'Not configured' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
