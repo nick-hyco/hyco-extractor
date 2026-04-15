@@ -6,7 +6,7 @@ export default async function handler(req) {
     });
   }
 
-  const { password } = await req.json();
+  const body = await req.json();
   const correctPassword = process.env.TOOL_PASSWORD;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
@@ -17,7 +17,7 @@ export default async function handler(req) {
     });
   }
 
-  if (password !== correctPassword) {
+  if (body.pw !== correctPassword) {
     return new Response(JSON.stringify({ error: 'Incorrect password' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json' }
