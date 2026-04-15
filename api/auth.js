@@ -1,0 +1,33 @@
+export const config = { runtime: 'edge' };
+
+export default async function handler(req) {
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  const { password } = await req.json();
+  const correctPassword = process.env.TOOL_PASSWORD;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+
+  if (!correctPassword || !anthropicKey) {
+    return new Response(JSON.stringify({ error: 'Server not configured. Add TOOL_PASSWORD and ANTHROPIC_API_KEY in Vercel environment variables.' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  if (password !== correctPassword) {
+    return new Response(JSON.stringify({ error: 'Incorrect password' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  return new Response(JSON.stringify({ success: true, key: anthropicKey }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
