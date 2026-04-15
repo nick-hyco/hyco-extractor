@@ -400,7 +400,7 @@ async function fetchPaperList() {
       if (!items.length) break;
 
       for (const item of items) {
-        if (item.file_name && item.extension?.toLowerCase() === 'pdf') {
+        if (item.file_name && item.extension?.toLowerCase().includes('pdf')) {
           papers.push({
             id: item.id,
             name: item.document_name || item.file_name,
