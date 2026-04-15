@@ -1,31 +1,19 @@
-export default async function handler(req) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const body = await req.json();
+  const { pw } = req.body;
   const correctPassword = process.env.TOOL_PASSWORD;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
   if (!correctPassword || !anthropicKey) {
-    return new Response(JSON.stringify({ error: 'Not configured' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return res.status(500).json({ error: 'Not configured' });
   }
 
-  if (body.pw !== correctPassword) {
-    return new Response(JSON.stringify({ error: 'Incorrect password' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' }
-    });
+  if (pw !== correctPassword) {
+    return res.status(401).json({ error: 'Incorrect password' });
   }
 
-  return new Response(JSON.stringify({ success: true, key: anthropicKey }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' }
-  });
+  return res.status(200).json({ success: true, key: anthropicKey });
 }
