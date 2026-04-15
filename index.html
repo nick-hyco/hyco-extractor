@@ -388,7 +388,7 @@ async function fetchPaperList() {
     let page = 1;
     while (papers.length < max) {
       const size = Math.min(50, max - papers.length);
-      let url = `${GRAIL_API}/notes/approved?page=${page}&size=${size}`;
+      let url = `/api/proxy?page=${page}&size=${size}`;
       if (cat) url += `&category=${encodeURIComponent(cat)}`;
       if (subj) url += `&subject=${encodeURIComponent(subj)}`;
       if (dtype) url += `&doc_type=${encodeURIComponent(dtype)}`;
