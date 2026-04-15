@@ -435,7 +435,7 @@ Rules: exact wording only, no answers, note [Figure X referenced] where diagrams
         'Content-Type': 'application/json',
         'pw': sessionStorage.getItem('hyco_pw'),
       },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4096, messages: [{ role: 'user', content }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 4096, messages: [{ role: 'user', content }] })
     });
 
     const data = await resp.json();
@@ -495,7 +495,7 @@ Skip irrelevant questions. End with: "TOTAL: X questions matched out of Y"`;
         'Content-Type': 'application/json',
         'pw': sessionStorage.getItem('hyco_pw'),
       },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 8192, messages: [{ role: 'user', content: prompt }] })
+      body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 8192, messages: [{ role: 'user', content: prompt }] })
     });
     const data = await resp.json();
     if (data.error) throw new Error(data.error.message);
