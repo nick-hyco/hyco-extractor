@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HYCO Question Bank</title>
+<style>
+:root {
+  --teal: #053F47; --teal-mid: #0a6070; --teal-light: #e8f4f6; --teal-dark: #032830;
+  --gold: #FFB701; --gold-light: #fff8e6;
+  --sky: #8ECAE6; --sky-light: #e6f4fb;
+  --white: #ffffff; --grey: #f4f4f4; --grey-mid: #e0e0e0; --grey-dark: #888;
+  --text: #1a1a1a; --text-muted: #555;
+  --danger: #c0392b; --danger-light: #fdecea;
+  --success: #1a7a4a; --success-light: #e8f5ee;
+  --border: 1px solid var(--grey-mid);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Georgia, serif; background: #f4f4f0; color: var(--text); min-height: 100vh; }
+
+/* LOGIN */
+#loginScreen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--teal); }
+.login-box { background: var(--white); border-radius: 14px; padding: 2.5rem 2rem; width: 100%; max-width: 380px; text-align: center; }
+.login-logo { font-size: 28px; font-weight: bold; color: var(--teal); margin-bottom: 4px; }
+.login-logo span { color: var(--gold); }
+.login-sub { font-size: 13px; color: var(--grey-dark); font-family: sans-serif; margin-bottom: 2rem; }
+.login-box label { text-align: left; display: block; font-size: 12px; font-family: sans-serif; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+.login-box input[type=password] { width: 100%; padding: 11px 14px; border: var(--border); border-radius: 7px; font-size: 15px; font-family: sans-serif; outline: none; margin-bottom: 1rem; }
+.login-box input[type=password]:focus { border-color: var(--teal); }
+.login-btn { width: 100%; padding: 12px; background: var(--teal); color: var(--white); border: none; border-radius: 7px; font-size: 15px; font-family: sans-serif; font-weight: 600; cursor: pointer; }
+.login-btn:hover { background: var(--teal-mid); }
+.login-btn:disabled { background: var(--grey-mid); cursor: not-allowed; }
+.login-error { font-size: 13px; color: var(--danger); font-family: sans-serif; margin-top: 10px; min-height: 18px; }
+
+/* APP */
+#appScreen { display: none; }
+header { background: var(--teal); padding: 0 2rem; display: flex; align-items: center; gap: 0; height: 54px; }
+.logo { font-size: 18px; font-weight: bold; color: var(--gold); font-family: Georgia, serif; margin-right: 2rem; white-space: nowrap; }
+.logo span { color: rgba(255,255,255,0.7); font-weight: 300; }
+.nav { display: flex; height: 100%; }
+.nav-btn { height: 100%; padding: 0 18px; background: transparent; border: none; color: rgba(255,255,255,0.6); font-size: 13px; font-family: sans-serif; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; white-space: nowrap; }
+.nav-btn:hover { color: var(--white); }
+.nav-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.hdr-stat { font-size: 12px; font-family: sans-serif; color: var(--sky); }
+.logout-btn { padding: 5px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.3); color: var(--white); border-radius: 5px; font-size: 12px; font-family: sans-serif; cursor: pointer; }
+
+/* TABS */
+.tab { display: none; max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+.tab.active { display: block; }
+
+/* CARDS */
+.card { background: var(--white); border: var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+.card-title { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.08em; color: var(--teal); margin-bottom: 1rem; font-family: sans-serif; border-bottom: 2px solid var(--gold); padding-bottom: 0.35rem; display: inline-block; }
+
+/* FORM */
+label { display: block; font-size: 12px; font-family: sans-serif; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+select, input[type=text], input[type=number], textarea { width: 100%; padding: 8px 11px; border: var(--border); border-radius: 6px; font-size: 13px; font-family: sans-serif; background: var(--white); color: var(--text); outline: none; }
+select:focus, input:focus, textarea:focus { border-color: var(--teal); }
+textarea { resize: vertical; font-size: 13px; line-height: 1.6; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border: none; border-radius: 6px; font-size: 13px; font-family: sans-serif; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.btn-primary { background: var(--teal); color: var(--white); }
+.btn-primary:hover { background: var(--teal-mid); }
+.btn-primary:disabled { background: var(--grey-mid); color: var(--grey-dark); cursor: not-allowed; }
+.btn-gold { background: var(--gold); color: var(--teal); }
+.btn-gold:hover { background: #e6a500; }
+.btn-outline { background: transparent; border: var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+.btn-danger { background: var(--danger); color: var(--white); }
+.btn-sm { padding: 5px 11px; font-size: 12px; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+
+/* STATUS */
+.status { padding: 9px 13px; border-radius: 6px; font-size: 13px; font-family: sans-serif; margin: 0.75rem 0; display: none; }
+.status.show { display: block; }
+.status.info { background: var(--teal-light); color: var(--teal); border-left: 3px solid var(--teal); }
+.status.error { background: var(--danger-light); color: var(--danger); border-left: 3px solid var(--danger); }
+.status.success { background: var(--success-light); color: var(--success); border-left: 3px solid var(--success); }
+.status.warning { background: var(--gold-light); color: #7a5500; border-left: 3px solid var(--gold); }
+
+/* PROGRESS */
+.progress-bg { background: var(--grey-mid); border-radius: 99px; height: 7px; overflow: hidden; margin: 6px 0; }
+.progress-fill { height: 100%; background: var(--gold); border-radius: 99px; transition: width 0.3s; width: 0%; }
+.progress-label { font-size: 12px; font-family: sans-serif; color: var(--text-muted); }
+
+/* PAPER LIST */
+.paper-list { display: flex; flex-direction: column; gap: 5px; max-height: 260px; overflow-y: auto; margin-bottom: 1rem; }
+.paper-item { display: flex; align-items: center; gap: 9px; padding: 7px 11px; border: var(--border); border-radius: 6px; font-size: 13px; font-family: sans-serif; }
+.paper-item .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--grey-mid); }
+.paper-item.running .dot { background: var(--gold); animation: pulse 1s infinite; }
+.paper-item.done .dot { background: var(--success); }
+.paper-item.error .dot { background: var(--danger); }
+.p-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tag { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--grey); color: var(--grey-dark); flex-shrink: 0; }
+.tag-teal { background: var(--teal-light); color: var(--teal); }
+.tag-gold { background: var(--gold-light); color: #7a5500; }
+.tag-sky { background: var(--sky-light); color: #0a4a6e; }
+.tag-success { background: var(--success-light); color: var(--success); }
+.tag-danger { background: var(--danger-light); color: var(--danger); }
+
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+/* STATS ROW */
+.stats-row { display: flex; gap: 1rem; margin-bottom: 1.25rem; }
+.stat { flex: 1; background: var(--grey); border-radius: 8px; padding: 10px; text-align: center; }
+.stat-num { font-size: 24px; font-weight: bold; color: var(--teal); font-family: sans-serif; }
+.stat-label { font-size: 10px; color: var(--text-muted); font-family: sans-serif; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* QUESTION BANK */
+.qb-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; align-items: flex-end; }
+.qb-filters > div { flex: 1; min-width: 120px; }
+.q-grid { display: flex; flex-direction: column; gap: 10px; }
+.q-card { background: var(--white); border: var(--border); border-radius: 8px; overflow: hidden; }
+.q-card-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--grey); cursor: pointer; border-bottom: var(--border); }
+.q-card-header:hover { background: #ebebeb; }
+.q-num { font-size: 13px; font-weight: bold; color: var(--teal); font-family: sans-serif; min-width: 32px; }
+.q-title { flex: 1; font-size: 13px; font-family: sans-serif; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.q-tags { display: flex; gap: 5px; flex-wrap: wrap; flex-shrink: 0; }
+.q-body { display: none; padding: 14px; }
+.q-body.open { display: block; }
+.q-text { font-size: 13px; font-family: sans-serif; line-height: 1.7; white-space: pre-wrap; margin-bottom: 1rem; color: var(--text); }
+.q-pages { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+.q-page-img { border: var(--border); border-radius: 6px; max-width: 100%; cursor: pointer; }
+.q-page-img:hover { border-color: var(--teal); }
+.q-answer { background: var(--success-light); border: 1px solid #9ed4b8; border-radius: 6px; padding: 10px 14px; font-size: 13px; font-family: sans-serif; line-height: 1.7; white-space: pre-wrap; color: #0f4a2e; margin-top: 8px; }
+.q-lo-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+.lo-tag { font-size: 11px; padding: 3px 8px; border-radius: 4px; background: var(--sky-light); color: #0a4a6e; }
+.empty-state { text-align: center; padding: 3rem; color: var(--grey-dark); font-family: sans-serif; font-size: 14px; }
+
+/* LIGHTBOX */
+#lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; cursor: pointer; }
+#lightbox.open { display: flex; }
+#lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
+
+/* SYLLABUS */
+.lo-list { display: flex; flex-direction: column; gap: 6px; max-height: 400px; overflow-y: auto; margin-bottom: 1rem; }
+.lo-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 11px; border: var(--border); border-radius: 6px; font-size: 13px; font-family: sans-serif; }
+.lo-item .lo-code { font-weight: bold; color: var(--teal); min-width: 50px; }
+.lo-item .lo-text { flex: 1; color: var(--text); line-height: 1.5; }
+.lo-item .lo-del { background: transparent; border: none; color: var(--grey-dark); cursor: pointer; font-size: 16px; padding: 0 4px; }
+.lo-item .lo-del:hover { color: var(--danger); }
+.divider { border: none; border-top: var(--border); margin: 1rem 0; }
+.hint { font-size: 12px; color: var(--grey-dark); font-family: sans-serif; margin-top: 4px; }
+
+/* WORKSHEET */
+.ws-q-list { display: flex; flex-direction: column; gap: 6px; max-height: 350px; overflow-y: auto; margin-bottom: 1rem; }
+.ws-q-item { display: flex; align-items: center; gap: 9px; padding: 7px 11px; border: var(--border); border-radius: 6px; font-size: 13px; font-family: sans-serif; cursor: pointer; }
+.ws-q-item:hover { border-color: var(--teal); }
+.ws-q-item.selected { border-color: var(--teal); background: var(--teal-light); }
+.ws-q-item input[type=checkbox] { width: 15px; height: 15px; flex-shrink: 0; accent-color: var(--teal); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">HY<span>CO</span></div>
+    <div class="login-sub">Question Bank System</div>
+    <label>Password</label>
+    <input type="password" id="loginPassword" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign in</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen">
+  <header>
+    <div class="logo">HYCO <span>Question Bank</span></div>
+    <nav class="nav">
+      <button class="nav-btn active" onclick="showTab('ingest',this)">Ingest Papers</button>
+      <button class="nav-btn" onclick="showTab('bank',this)">Question Bank</button>
+      <button class="nav-btn" onclick="showTab('worksheet',this)">Worksheet Builder</button>
+      <button class="nav-btn" onclick="showTab('syllabus',this)">Syllabus Manager</button>
+    </nav>
+    <div class="header-right">
+      <span class="hdr-stat" id="hdrStats">0 questions stored</span>
+      <button class="logout-btn" onclick="doLogout()">Sign out</button>
+    </div>
+  </header>
+
+  <!-- INGEST TAB -->
+  <div class="tab active" id="tab-ingest">
+    <div class="card">
+      <div class="card-title">Import papers from grail.moe</div>
+      <div class="grid3">
+        <div>
+          <label>Category</label>
+          <select id="ing-category">
+            <option value="GCE 'O' Levels">GCE O Levels</option>
+            <option value="GCE 'A' Levels">GCE A Levels</option>
+            <option value="IB">IB</option>
+          </select>
+        </div>
+        <div>
+          <label>Subject</label>
+          <select id="ing-subject">
+            <option value="">All subjects</option>
+            <option value="Pure Physics">Pure Physics</option>
+            <option value="Pure Chemistry">Pure Chemistry</option>
+            <option value="Pure Biology">Pure Biology</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Biology">Biology</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Additional Mathematics">Additional Mathematics</option>
+            <option value="Economics">Economics</option>
+            <option value="Geography">Geography</option>
+            <option value="English Language">English Language</option>
+            <option value="General Paper">General Paper</option>
+          </select>
+        </div>
+        <div>
+          <label>Document Type</label>
+          <select id="ing-doctype">
+            <option value="Exam Papers">Exam Papers</option>
+            <option value="">All types</option>
+            <option value="Summary Notes">Summary Notes</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid3">
+        <div>
+          <label>Max papers</label>
+          <input type="number" id="ing-max" value="5" min="1" max="100" />
+        </div>
+        <div>
+          <label>Concurrent (1–2)</label>
+          <input type="number" id="ing-concurrency" value="1" min="1" max="2" />
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button class="btn btn-outline" style="width:100%" onclick="fetchIngestionList()">Fetch paper list</button>
+        </div>
+      </div>
+      <div id="ing-fetch-status" class="status"></div>
+    </div>
+
+    <div class="card" id="ing-papers-card" style="display:none;">
+      <div class="card-title">Papers to ingest</div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-num" id="ing-stat-total">0</div><div class="stat-label">Papers</div></div>
+        <div class="stat"><div class="stat-num" id="ing-stat-done">0</div><div class="stat-label">Done</div></div>
+        <div class="stat"><div class="stat-num" id="ing-stat-err">0</div><div class="stat-label">Errors</div></div>
+        <div class="stat"><div class="stat-num" id="ing-stat-q">0</div><div class="stat-label">Questions</div></div>
+      </div>
+      <div id="ing-progress-wrap" style="display:none;margin-bottom:1rem;">
+        <div class="progress-bg"><div class="progress-fill" id="ing-progress"></div></div>
+        <div class="progress-label" id="ing-progress-label">0 / 0</div>
+      </div>
+      <div class="paper-list" id="ing-paper-list"></div>
+      <button class="btn btn-primary" id="ing-btn-run" onclick="runIngestion()" disabled>Ingest all papers</button>
+      <div id="ing-run-status" class="status"></div>
+    </div>
+  </div>
+
+  <!-- BANK TAB -->
+  <div class="tab" id="tab-bank">
+    <div class="card">
+      <div class="card-title">Filter questions</div>
+      <div class="qb-filters">
+        <div><label>Subject</label><select id="f-subject" onchange="renderBank()"><option value="">All</option></select></div>
+        <div><label>Type</label><select id="f-type" onchange="renderBank()"><option value="">All</option><option>MCQ</option><option>Structured</option><option>Essay</option></select></div>
+        <div><label>Year</label><select id="f-year" onchange="renderBank()"><option value="">All</option></select></div>
+        <div><label>LO Tag</label><select id="f-lo" onchange="renderBank()"><option value="">All</option></select></div>
+        <div><label>Search</label><input type="text" id="f-search" placeholder="Keywords..." oninput="renderBank()" /></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-outline btn-sm" onclick="clearFilters()">Clear filters</button>
+        <button class="btn btn-danger btn-sm" onclick="clearAllQuestions()">Clear all questions</button>
+        <span id="bank-count" style="font-size:12px;font-family:sans-serif;color:var(--grey-dark);margin-left:auto;"></span>
+      </div>
+    </div>
+    <div id="q-grid" class="q-grid"></div>
+  </div>
+
+  <!-- WORKSHEET TAB -->
+  <div class="tab" id="tab-worksheet">
+    <div class="card">
+      <div class="card-title">Select questions</div>
+      <div class="grid3" style="margin-bottom:0.75rem;">
+        <div><label>Filter by LO</label><select id="ws-lo" onchange="renderWsQuestions()"><option value="">All LOs</option></select></div>
+        <div><label>Filter by subject</label><select id="ws-subj" onchange="renderWsQuestions()"><option value="">All</option></select></div>
+        <div><label>Filter by type</label><select id="ws-type" onchange="renderWsQuestions()"><option value="">All</option><option>MCQ</option><option>Structured</option><option>Essay</option></select></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-outline btn-sm" onclick="selectAllWs()">Select all</button>
+        <button class="btn btn-outline btn-sm" onclick="clearWsSelection()">Clear</button>
+        <span id="ws-sel-count" style="font-size:12px;font-family:sans-serif;color:var(--grey-dark);"></span>
+      </div>
+      <div class="ws-q-list" id="ws-q-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Worksheet settings</div>
+      <div class="grid2">
+        <div><label>Title</label><input type="text" id="ws-title" placeholder="e.g. Pure Chemistry — Electrolysis Practice" /></div>
+        <div><label>Include answer key?</label><select id="ws-answers"><option value="no">No</option><option value="yes">Yes (separate page)</option></select></div>
+      </div>
+      <button class="btn btn-gold" onclick="generateWorksheet()">Generate worksheet</button>
+      <div id="ws-status" class="status"></div>
+    </div>
+    <div class="card" id="ws-output-card" style="display:none;">
+      <div class="card-title">Preview</div>
+      <div class="btn-row">
+        <button class="btn btn-outline btn-sm" onclick="printWorksheet()">Print / Save PDF</button>
+        <button class="btn btn-outline btn-sm" onclick="copyWorksheet()">Copy text</button>
+      </div>
+      <div id="ws-preview" style="font-family:sans-serif;font-size:13px;line-height:1.8;white-space:pre-wrap;background:var(--grey);padding:1.25rem;border-radius:8px;max-height:600px;overflow-y:auto;"></div>
+    </div>
+  </div>
+
+  <!-- SYLLABUS TAB -->
+  <div class="tab" id="tab-syllabus">
+    <div class="card">
+      <div class="card-title">Syllabus learning outcomes</div>
+      <p class="hint" style="margin-bottom:1rem;">Add individual learning outcomes. These are used to auto-tag questions during ingestion. After updating, use "Re-tag all questions" to apply changes to existing questions.</p>
+      <div class="grid3" style="margin-bottom:0.75rem;">
+        <div><label>LO Code</label><input type="text" id="lo-code" placeholder="e.g. 3.2.1" /></div>
+        <div style="grid-column:span 2;"><label>Learning Outcome</label><input type="text" id="lo-text" placeholder="e.g. Explain ionic bonding in terms of electrostatic attraction" onkeydown="if(event.key==='Enter')addLO()" /></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="addLO()">Add LO</button>
+        <button class="btn btn-outline" onclick="bulkImportLOs()">Bulk import (paste text)</button>
+      </div>
+      <hr class="divider">
+      <div class="lo-list" id="lo-list"></div>
+      <div id="syl-status" class="status"></div>
+      <hr class="divider">
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="retagAllQuestions()">Re-tag all questions with updated syllabus</button>
+        <button class="btn btn-outline btn-sm" onclick="exportSyllabus()">Export syllabus</button>
+        <button class="btn btn-danger btn-sm" onclick="clearSyllabus()">Clear all LOs</button>
+      </div>
+      <div id="retag-status" class="status"></div>
+    </div>
+
+    <div class="card" id="bulk-import-card" style="display:none;">
+      <div class="card-title">Bulk import learning outcomes</div>
+      <p class="hint" style="margin-bottom:0.75rem;">Paste your syllabus text below. Claude will parse it into individual LOs with codes automatically.</p>
+      <textarea id="bulk-lo-text" rows="10" placeholder="Paste your MOE syllabus learning outcomes here..."></textarea>
+      <div class="btn-row" style="margin-top:0.75rem;">
+        <button class="btn btn-primary" onclick="parseBulkLOs()">Parse with Claude</button>
+        <button class="btn btn-outline" onclick="document.getElementById('bulk-import-card').style.display='none'">Cancel</button>
+      </div>
+      <div id="bulk-status" class="status"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src="" /></div>
+
+<script>
+// ── CONSTANTS ─────────────────────────────────────────
+const ANTHROPIC_API = '/api/claude';
+const DB_NAME = 'HYCOQuestionBank';
+const DB_VERSION = 2;
+let API_KEY = '', TOOL_PW = '';
+let db = null;
+let ingPapers = [];
+let ingDone = 0, ingErr = 0, ingQ = 0;
+let _pdfjsLib = null;
+let syllabus = []; // [{code, text}]
+let allQuestions = []; // cached from DB
+
+// ── DB ────────────────────────────────────────────────
+function openDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('questions')) {
+        const qs = db.createObjectStore('questions', { keyPath: 'id', autoIncrement: true });
+        qs.createIndex('subject', 'subject');
+        qs.createIndex('source', 'source');
+      }
+      if (!db.objectStoreNames.contains('syllabus')) {
+        db.createObjectStore('syllabus', { keyPath: 'code' });
+      }
+      if (!db.objectStoreNames.contains('settings')) {
+        db.createObjectStore('settings', { keyPath: 'key' });
+      }
+    };
+    req.onsuccess = e => res(e.target.result);
+    req.onerror = e => rej(e.target.error);
+  });
+}
+
+function dbGetAll(store) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+
+function dbPut(store, item) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).put(item);
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+
+function dbDelete(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).delete(key);
+    req.onsuccess = () => res();
+    req.onerror = () => rej(req.error);
+  });
+}
+
+function dbClear(store) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).clear();
+    req.onsuccess = () => res();
+    req.onerror = () => rej(req.error);
+  });
+}
+
+// ── AUTH ──────────────────────────────────────────────
+async function doLogin() {
+  const pw = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  if (!pw) { errEl.textContent = 'Please enter a password.'; return; }
+  btn.disabled = true; btn.textContent = 'Checking...'; errEl.textContent = '';
+  try {
+    const resp = await fetch('/api/auth', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ pw }) });
+    const data = await resp.json();
+    if (resp.ok && data.success) {
+      API_KEY = data.key; TOOL_PW = pw;
+      sessionStorage.setItem('hyco_auth', '1');
+      sessionStorage.setItem('hyco_key', data.key);
+      sessionStorage.setItem('hyco_pw', pw);
+      await initApp();
+    } else {
+      errEl.textContent = data.error || 'Incorrect password.';
+      btn.disabled = false; btn.textContent = 'Sign in';
+    }
+  } catch(e) {
+    errEl.textContent = 'Connection error: ' + e.message;
+    btn.disabled = false; btn.textContent = 'Sign in';
+  }
+}
+
+function doLogout() {
+  sessionStorage.clear();
+  API_KEY = ''; TOOL_PW = '';
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginBtn').textContent = 'Sign in';
+}
+
+window.addEventListener('load', async () => {
+  const k = sessionStorage.getItem('hyco_key');
+  const p = sessionStorage.getItem('hyco_pw');
+  if (sessionStorage.getItem('hyco_auth') === '1' && k && p) {
+    API_KEY = k; TOOL_PW = p;
+    await initApp();
+  }
+});
+
+async function initApp() {
+  db = await openDB();
+  await loadSyllabus();
+  await refreshCache();
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+  renderSyllabusList();
+  renderBank();
+  populateFilterOptions();
+}
+
+// ── HELPERS ───────────────────────────────────────────
+function setStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'status show ' + type;
+  el.innerHTML = msg;
+}
+
+function blobToBase64(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
+}
+
+async function loadPdfJs() {
+  if (_pdfjsLib) return _pdfjsLib;
+  await new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  _pdfjsLib = pdfjsLib;
+  return _pdfjsLib;
+}
+
+async function callClaude(body) {
+  const resp = await fetch(ANTHROPIC_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'pw': TOOL_PW },
+    body: JSON.stringify(body)
+  });
+  const data = await resp.json();
+  if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  return data.content.map(c => c.text || '').join('');
+}
+
+async function refreshCache() {
+  allQuestions = await dbGetAll('questions');
+  updateHdrStats();
+}
+
+function updateHdrStats() {
+  document.getElementById('hdrStats').textContent = allQuestions.length + ' questions stored';
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'bank') { renderBank(); populateFilterOptions(); }
+  if (name === 'worksheet') { populateWsFilters(); renderWsQuestions(); }
+  if (name === 'syllabus') renderSyllabusList();
+}
+
+// ── SYLLABUS ──────────────────────────────────────────
+async function loadSyllabus() {
+  syllabus = await dbGetAll('syllabus');
+}
+
+function renderSyllabusList() {
+  const list = document.getElementById('lo-list');
+  if (!syllabus.length) {
+    list.innerHTML = '<div class="empty-state">No learning outcomes yet. Add them above or use bulk import.</div>';
+    return;
+  }
+  list.innerHTML = syllabus.map(lo => `
+    <div class="lo-item">
+      <span class="lo-code">${lo.code}</span>
+      <span class="lo-text">${lo.text}</span>
+      <button class="lo-del" onclick="deleteLO('${lo.code}')" title="Delete">×</button>
+    </div>`).join('');
+}
+
+async function addLO() {
+  const code = document.getElementById('lo-code').value.trim();
+  const text = document.getElementById('lo-text').value.trim();
+  if (!code || !text) { setStatus('syl-status', 'Both code and text are required.', 'error'); return; }
+  await dbPut('syllabus', { code, text });
+  await loadSyllabus();
+  renderSyllabusList();
+  document.getElementById('lo-code').value = '';
+  document.getElementById('lo-text').value = '';
+  setStatus('syl-status', 'LO added.', 'success');
+}
+
+async function deleteLO(code) {
+  await dbDelete('syllabus', code);
+  await loadSyllabus();
+  renderSyllabusList();
+}
+
+async function clearSyllabus() {
+  if (!confirm('Delete all learning outcomes?')) return;
+  await dbClear('syllabus');
+  await loadSyllabus();
+  renderSyllabusList();
+}
+
+function exportSyllabus() {
+  const text = syllabus.map(lo => `${lo.code}: ${lo.text}`).join('\n');
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'HYCO_Syllabus.txt';
+  a.click();
+}
+
+function bulkImportLOs() {
+  document.getElementById('bulk-import-card').style.display = 'block';
+  document.getElementById('bulk-lo-text').value = '';
+}
+
+async function parseBulkLOs() {
+  const text = document.getElementById('bulk-lo-text').value.trim();
+  if (!text) { setStatus('bulk-status', 'Please paste syllabus text first.', 'error'); return; }
+  setStatus('bulk-status', 'Parsing with Claude...', 'info');
+  try {
+    const prompt = `Parse the following syllabus text into individual learning outcomes.
+
+Return ONLY a JSON array, no other text:
+[{"code": "1.1", "text": "full learning outcome text"}, ...]
+
+If a code is not explicit, infer a logical numbering scheme.
+
+SYLLABUS TEXT:
+${text}`;
+    const result = await callClaude({ model: 'claude-sonnet-4-5', max_tokens: 4096, messages: [{ role: 'user', content: prompt }] });
+    const clean = result.replace(/```json|```/g, '').trim();
+    const los = JSON.parse(clean);
+    for (const lo of los) {
+      if (lo.code && lo.text) await dbPut('syllabus', { code: String(lo.code), text: lo.text });
+    }
+    await loadSyllabus();
+    renderSyllabusList();
+    document.getElementById('bulk-import-card').style.display = 'none';
+    setStatus('syl-status', `Imported ${los.length} learning outcomes.`, 'success');
+  } catch(e) {
+    setStatus('bulk-status', 'Parse error: ' + e.message, 'error');
+  }
+}
+
+async function retagAllQuestions() {
+  if (!syllabus.length) { setStatus('retag-status', 'No syllabus loaded. Add LOs first.', 'error'); return; }
+  if (!allQuestions.length) { setStatus('retag-status', 'No questions in database.', 'error'); return; }
+  setStatus('retag-status', `Re-tagging ${allQuestions.length} questions...`, 'info');
+  const syllabusText = syllabus.map(lo => `${lo.code}: ${lo.text}`).join('\n');
+  let done = 0;
+  for (const q of allQuestions) {
+    try {
+      const loTags = await tagQuestion(q.text, syllabusText);
+      q.lo_tags = loTags;
+      await dbPut('questions', q);
+      done++;
+    } catch(e) { /* skip */ }
+  }
+  await refreshCache();
+  setStatus('retag-status', `Re-tagged ${done} questions.`, 'success');
+}
+
+async function tagQuestion(questionText, syllabusText) {
+  const prompt = `Match this exam question to the most relevant learning outcomes from the syllabus below.
+
+SYLLABUS:
+${syllabusText}
+
+QUESTION:
+${questionText.slice(0, 800)}
+
+Return ONLY a JSON array of the matching LO codes, e.g. ["3.2", "3.4"]. Maximum 4 matches. If none match, return [].`;
+  try {
+    const result = await callClaude({ model: 'claude-sonnet-4-5', max_tokens: 200, messages: [{ role: 'user', content: prompt }] });
+    const clean = result.replace(/```json|```/g, '').trim();
+    return JSON.parse(clean);
+  } catch(e) { return []; }
+}
+
+// ── INGESTION ─────────────────────────────────────────
+async function fetchIngestionList() {
+  const cat = document.getElementById('ing-category').value;
+  const subj = document.getElementById('ing-subject').value;
+  const dtype = document.getElementById('ing-doctype').value;
+  const max = parseInt(document.getElementById('ing-max').value) || 5;
+  setStatus('ing-fetch-status', 'Fetching paper list...', 'info');
+  ingPapers = [];
+  try {
+    let page = 1;
+    while (ingPapers.length < max) {
+      const size = Math.min(50, max - ingPapers.length);
+      let url = `/api/proxy?page=${page}&size=${size}`;
+      if (cat) url += `&category=${encodeURIComponent(cat)}`;
+      if (subj) url += `&subject=${encodeURIComponent(subj)}`;
+      if (dtype) url += `&doc_type=${encodeURIComponent(dtype)}`;
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error('API ' + resp.status);
+      const data = await resp.json();
+      const items = data.items || [];
+      if (!items.length) break;
+      for (const item of items) {
+        if (item.file_name && item.extension && item.extension.toLowerCase().includes('pdf')) {
+          ingPapers.push({
+            id: item.id,
+            name: item.document_name || item.file_name,
+            file_name: item.file_name,
+            subject: item.doc_subject?.name || subj || '',
+            category: item.doc_category?.name || cat || '',
+            year: item.year || '',
+          });
+        }
+        if (ingPapers.length >= max) break;
+      }
+      if (items.length < size) break;
+      page++;
+    }
+    if (!ingPapers.length) { setStatus('ing-fetch-status', 'No papers found.', 'error'); return; }
+    renderIngestionList();
+    setStatus('ing-fetch-status', `Found ${ingPapers.length} papers.`, 'success');
+    document.getElementById('ing-stat-total').textContent = ingPapers.length;
+    document.getElementById('ing-btn-run').disabled = false;
+    document.getElementById('ing-papers-card').style.display = 'block';
+  } catch(e) {
+    setStatus('ing-fetch-status', 'Error: ' + e.message, 'error');
+  }
+}
+
+function renderIngestionList() {
+  const list = document.getElementById('ing-paper-list');
+  list.innerHTML = '';
+  ingPapers.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'paper-item';
+    div.id = 'ing-paper-' + i;
+    div.innerHTML = `<div class="dot"></div><span class="p-name">${p.name}</span>${p.year?`<span class="tag">${p.year}</span>`:''}<span class="tag" id="ing-tag-${i}">pending</span>`;
+    list.appendChild(div);
+  });
+}
+
+function updateIngPaper(i, status, label) {
+  const el = document.getElementById('ing-paper-' + i);
+  const tag = document.getElementById('ing-tag-' + i);
+  if (el) el.className = 'paper-item ' + status;
+  if (tag) tag.textContent = label;
+}
+
+async function runIngestion() {
+  if (!syllabus.length) {
+    if (!confirm('No syllabus loaded — questions will be ingested without LO tags. Continue?')) return;
+  }
+  const concurrency = parseInt(document.getElementById('ing-concurrency').value) || 1;
+  ingDone = 0; ingErr = 0; ingQ = 0;
+  document.getElementById('ing-progress-wrap').style.display = 'block';
+  document.getElementById('ing-btn-run').disabled = true;
+  setStatus('ing-run-status', `Ingesting ${ingPapers.length} papers...`, 'info');
+
+  for (let i = 0; i < ingPapers.length; i += concurrency) {
+    const batch = ingPapers.slice(i, i + concurrency).map((p, j) => ingestPaper(i + j, p));
+    await Promise.all(batch);
+  }
+
+  await refreshCache();
+  populateFilterOptions();
+  setStatus('ing-run-status', `Done — ${ingQ} questions ingested from ${ingDone} papers (${ingErr} errors).`, 'success');
+  document.getElementById('ing-btn-run').disabled = false;
+}
+
+async function ingestPaper(i, paper) {
+  updateIngPaper(i, 'running', 'fetching...');
+  try {
+    const pdfResp = await fetch(`/api/pdf?file=${encodeURIComponent(paper.file_name)}`);
+    if (!pdfResp.ok) throw new Error('PDF ' + pdfResp.status);
+    const pdfData = await pdfResp.arrayBuffer();
+
+    updateIngPaper(i, 'running', 'rendering pages...');
+    const lib = await loadPdfJs();
+    const pdf = await lib.getDocument({ data: pdfData }).promise;
+    const pageImages = [];
+    for (let p = 1; p <= Math.min(pdf.numPages, 24); p++) {
+      const page = await pdf.getPage(p);
+      const viewport = page.getViewport({ scale: 1.8 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      pageImages.push(canvas.toDataURL('image/jpeg', 0.8));
+    }
+
+    updateIngPaper(i, 'running', 'extracting...');
+    const syllabusText = syllabus.length ? syllabus.map(lo => `${lo.code}: ${lo.text}`).join('\n') : '';
+
+    const content = pageImages.map((img, idx) => ({
+      type: 'image',
+      source: { type: 'base64', media_type: 'image/jpeg', data: img.split(',')[1] }
+    }));
+
+    const prompt = `You are extracting exam questions from a Singapore past year paper.
+Paper: "${paper.name}" | Subject: ${paper.subject} | Level: ${paper.category} | Year: ${paper.year}
+Total pages provided: ${pageImages.length}
+
+${syllabusText ? `SYLLABUS LEARNING OUTCOMES:\n${syllabusText}\n\n` : ''}
+
+Extract ALL questions. Return ONLY a JSON array, no other text:
+[
+  {
+    "question_number": "8",
+    "sub_parts": ["a","b","c"],
+    "text": "full question text including all sub-parts verbatim",
+    "pages": [3, 4],
+    "marks": 12,
+    "type": "Structured",
+    "lo_tags": ["3.2", "5.1"]
+  }
+]
+
+Rules:
+- question_number is the main number only (e.g. "8" not "8a")
+- sub_parts lists all lettered/numbered sub-parts
+- text includes ALL sub-parts verbatim
+- pages is the list of 1-indexed page numbers this question appears on
+- marks is total marks for the whole question
+- type is MCQ, Structured, or Essay
+- lo_tags matches codes from the syllabus above (empty array if no syllabus or no match)
+- If a question is an answer scheme entry, skip it`;
+
+    content.push({ type: 'text', text: prompt });
+
+    const result = await callClaude({ model: 'claude-sonnet-4-5', max_tokens: 8192, messages: [{ role: 'user', content }] });
+    const clean = result.replace(/```json|```/g, '').trim();
+    const questions = JSON.parse(clean);
+
+    // Store each question with its page images
+    for (const q of questions) {
+      const qPages = (q.pages || [1]).map(pn => pageImages[pn - 1] || pageImages[0]).filter(Boolean);
+      await dbPut('questions', {
+        question_number: String(q.question_number || '?'),
+        sub_parts: q.sub_parts || [],
+        text: q.text || '',
+        pages: q.pages || [],
+        page_images: qPages,
+        marks: q.marks || null,
+        type: q.type || 'Structured',
+        lo_tags: q.lo_tags || [],
+        source: paper.name,
+        subject: paper.subject,
+        category: paper.category,
+        year: paper.year,
+        answer_text: null,
+        ingested_at: new Date().toISOString(),
+      });
+      ingQ++;
+    }
+
+    ingDone++;
+    updateIngPaper(i, 'done', questions.length + 'q');
+    document.getElementById('ing-stat-done').textContent = ingDone;
+    document.getElementById('ing-stat-q').textContent = ingQ;
+
+  } catch(e) {
+    ingErr++;
+    updateIngPaper(i, 'error', 'failed');
+    document.getElementById('ing-stat-err').textContent = ingErr;
+    console.error(paper.name, e);
+    setStatus('ing-run-status', 'Last error: ' + e.message, 'warning');
+  }
+
+  const done = ingDone + ingErr;
+  document.getElementById('ing-progress').style.width = Math.round(done / ingPapers.length * 100) + '%';
+  document.getElementById('ing-progress-label').textContent = `${done} / ${ingPapers.length} papers`;
+}
+
+// ── QUESTION BANK ─────────────────────────────────────
+function populateFilterOptions() {
+  const subjects = [...new Set(allQuestions.map(q => q.subject).filter(Boolean))].sort();
+  const years = [...new Set(allQuestions.map(q => q.year).filter(Boolean))].sort().reverse();
+  const loTags = [...new Set(allQuestions.flatMap(q => q.lo_tags || []))].sort();
+
+  ['f-subject', 'ws-subj'].forEach(id => {
+    const sel = document.getElementById(id);
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">All</option>' + subjects.map(s => `<option>${s}</option>`).join('');
+    sel.value = cur;
+  });
+
+  const fYear = document.getElementById('f-year');
+  const curY = fYear.value;
+  fYear.innerHTML = '<option value="">All</option>' + years.map(y => `<option>${y}</option>`).join('');
+  fYear.value = curY;
+
+  ['f-lo', 'ws-lo'].forEach(id => {
+    const sel = document.getElementById(id);
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">All</option>' + loTags.map(l => `<option>${l}</option>`).join('');
+    sel.value = cur;
+  });
+}
+
+function getFilteredQuestions() {
+  const subj = document.getElementById('f-subject')?.value || '';
+  const type = document.getElementById('f-type')?.value || '';
+  const year = document.getElementById('f-year')?.value || '';
+  const lo = document.getElementById('f-lo')?.value || '';
+  const search = (document.getElementById('f-search')?.value || '').toLowerCase();
+  return allQuestions.filter(q => {
+    if (subj && q.subject !== subj) return false;
+    if (type && q.type !== type) return false;
+    if (year && String(q.year) !== String(year)) return false;
+    if (lo && !(q.lo_tags || []).includes(lo)) return false;
+    if (search && !q.text.toLowerCase().includes(search) && !q.source.toLowerCase().includes(search)) return false;
+    return true;
+  });
+}
+
+function renderBank() {
+  const qs = getFilteredQuestions();
+  document.getElementById('bank-count').textContent = `${qs.length} questions`;
+  const grid = document.getElementById('q-grid');
+  if (!qs.length) {
+    grid.innerHTML = '<div class="empty-state">No questions match your filters.</div>';
+    return;
+  }
+  grid.innerHTML = qs.map((q, i) => `
+    <div class="q-card">
+      <div class="q-card-header" onclick="toggleQ('qbody-${q.id}')">
+        <span class="q-num">Q${q.question_number}</span>
+        <span class="q-title">${q.text.slice(0, 120).replace(/\n/g,' ')}...</span>
+        <div class="q-tags">
+          ${q.type ? `<span class="tag tag-teal">${q.type}</span>` : ''}
+          ${q.marks ? `<span class="tag">${q.marks}m</span>` : ''}
+          ${q.year ? `<span class="tag">${q.year}</span>` : ''}
+          ${(q.lo_tags||[]).slice(0,2).map(l => `<span class="tag tag-sky">${l}</span>`).join('')}
+        </div>
+      </div>
+      <div class="q-body" id="qbody-${q.id}">
+        <div style="font-size:11px;font-family:sans-serif;color:var(--grey-dark);margin-bottom:8px;">
+          ${q.source} · ${q.subject} · ${q.category}
+        </div>
+        <div class="q-text">${q.text}</div>
+        ${(q.lo_tags||[]).length ? `<div class="q-lo-tags">${q.lo_tags.map(l=>`<span class="lo-tag">${l}</span>`).join('')}</div>` : ''}
+        <div class="q-pages" style="margin-top:12px;">
+          ${(q.page_images||[]).map((img,pi) => `<img class="q-page-img" src="${img}" style="max-width:${q.page_images.length > 1 ? '48%' : '100%'}" onclick="openLightbox('${q.id}',${pi})" />`).join('')}
+        </div>
+        ${q.answer_text ? `<div class="q-answer"><strong>Answer:</strong>\n${q.answer_text}</div>` : ''}
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn btn-outline btn-sm" onclick="deleteQuestion(${q.id})">Delete</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleQ(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+async function deleteQuestion(id) {
+  await dbDelete('questions', id);
+  await refreshCache();
+  renderBank();
+  populateFilterOptions();
+}
+
+async function clearAllQuestions() {
+  if (!confirm('Delete all questions from the database? This cannot be undone.')) return;
+  await dbClear('questions');
+  await refreshCache();
+  renderBank();
+  populateFilterOptions();
+}
+
+function clearFilters() {
+  ['f-subject','f-type','f-year','f-lo'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-search').value = '';
+  renderBank();
+}
+
+// LIGHTBOX - store images separately to avoid inline onclick size issues
+const lightboxImages = {};
+function openLightbox(qId, pi) {
+  const q = allQuestions.find(x => String(x.id) === String(qId));
+  if (!q || !q.page_images[pi]) return;
+  document.getElementById('lightbox-img').src = q.page_images[pi];
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+// ── WORKSHEET ─────────────────────────────────────────
+let wsSelected = new Set();
+
+function populateWsFilters() {
+  populateFilterOptions();
+}
+
+function renderWsQuestions() {
+  const lo = document.getElementById('ws-lo').value;
+  const subj = document.getElementById('ws-subj').value;
+  const type = document.getElementById('ws-type').value;
+  const qs = allQuestions.filter(q => {
+    if (lo && !(q.lo_tags||[]).includes(lo)) return false;
+    if (subj && q.subject !== subj) return false;
+    if (type && q.type !== type) return false;
+    return true;
+  });
+  const list = document.getElementById('ws-q-list');
+  if (!qs.length) { list.innerHTML = '<div class="empty-state">No questions match filters.</div>'; return; }
+  list.innerHTML = qs.map(q => `
+    <div class="ws-q-item ${wsSelected.has(q.id)?'selected':''}" onclick="toggleWsQ(${q.id},this)">
+      <input type="checkbox" ${wsSelected.has(q.id)?'checked':''} onclick="event.stopPropagation();toggleWsQ(${q.id},this.closest('.ws-q-item'))" />
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${q.text.slice(0,100)}...</span>
+      <span class="tag">${q.marks||'?'}m</span>
+      <span class="tag tag-teal">${q.type||''}</span>
+    </div>`).join('');
+  updateWsCount();
+}
+
+function toggleWsQ(id, el) {
+  if (wsSelected.has(id)) { wsSelected.delete(id); el.classList.remove('selected'); }
+  else { wsSelected.add(id); el.classList.add('selected'); }
+  el.querySelector('input[type=checkbox]').checked = wsSelected.has(id);
+  updateWsCount();
+}
+
+function selectAllWs() {
+  document.querySelectorAll('.ws-q-item').forEach(el => {
+    const id = parseInt(el.querySelector('input').getAttribute('onclick').match(/\d+/)[0]);
+    wsSelected.add(id); el.classList.add('selected'); el.querySelector('input').checked = true;
+  });
+  updateWsCount();
+}
+
+function clearWsSelection() {
+  wsSelected.clear();
+  document.querySelectorAll('.ws-q-item').forEach(el => { el.classList.remove('selected'); el.querySelector('input').checked = false; });
+  updateWsCount();
+}
+
+function updateWsCount() {
+  document.getElementById('ws-sel-count').textContent = wsSelected.size + ' questions selected';
+}
+
+async function generateWorksheet() {
+  if (!wsSelected.size) { setStatus('ws-status', 'Select at least one question.', 'error'); return; }
+  const title = document.getElementById('ws-title').value || 'HYCO Practice Worksheet';
+  const includeAnswers = document.getElementById('ws-answers').value === 'yes';
+  const selectedQs = allQuestions.filter(q => wsSelected.has(q.id));
+  let totalMarks = selectedQs.reduce((sum, q) => sum + (q.marks || 0), 0);
+
+  let ws = `${title}\n${'─'.repeat(60)}\nTotal marks: ${totalMarks} | Questions: ${selectedQs.length}\n${'─'.repeat(60)}\n\n`;
+  selectedQs.forEach((q, i) => {
+    ws += `Question ${i + 1}${q.marks ? ` [${q.marks} marks]` : ''}\n\n${q.text}\n\n${'─'.repeat(40)}\n\n`;
+  });
+
+  if (includeAnswers) {
+    ws += `\n${'═'.repeat(60)}\nANSWER KEY\n${'═'.repeat(60)}\n\n`;
+    selectedQs.forEach((q, i) => {
+      ws += `Q${i + 1}: ${q.answer_text || '[No answer stored]'}\n\n`;
+    });
+  }
+
+  document.getElementById('ws-preview').textContent = ws;
+  document.getElementById('ws-output-card').style.display = 'block';
+  setStatus('ws-status', `Worksheet generated with ${selectedQs.length} questions (${totalMarks} marks).`, 'success');
+}
+
+function printWorksheet() { window.print(); }
+function copyWorksheet() {
+  const text = document.getElementById('ws-preview').textContent;
+  navigator.clipboard.writeText(text).then(() => alert('Copied!'));
+}
+</script>
+</body>
+</html>
