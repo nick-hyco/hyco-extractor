@@ -480,7 +480,7 @@ async function runExtraction() {
 async function extractPaper(i, paper) {
   updatePaper(i, 'running', 'fetching...');
   try {
-    const pdfResp = await fetch(paper.url);
+    const pdfResp = await fetch(`/api/pdf?file=${encodeURIComponent(paper.file_name)}`);
     if (!pdfResp.ok) throw new Error('PDF ' + pdfResp.status);
     const b64 = await blobToBase64(await pdfResp.blob());
 
