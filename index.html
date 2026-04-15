@@ -297,6 +297,20 @@ let allQuestionsText = '';
 let filteredQuestionsText = '';
 let doneCount = 0, errCount = 0, questionCount = 0;
 
+let _pdfjsLib = null;
+async function loadPdfJs() {
+  if (_pdfjsLib) return _pdfjsLib;
+  await new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  _pdfjsLib = pdfjsLib;
+  return _pdfjsLib;
+}
+
 // ── AUTH ──────────────────────────────────────────────
 async function doLogin() {
   const pw = document.getElementById('loginPassword').value;
@@ -481,8 +495,87 @@ async function extractPaper(i, paper) {
   updatePaper(i, 'running', 'fetching...');
   try {
     const pdfResp = await fetch(`/api/pdf?file=${encodeURIComponent(paper.file_name)}`);
-    if (!pdfResp.ok) throw new Error('PDF ' + pdfResp.status);
-    const b64 = await blobToBase64(await pdfResp.blob());
+    if (!pdfResp.ok) throw new Error('PDF fetch failed: ' + pdfResp.status);
+    const pdfData = await pdfResp.arrayBuffer();
+
+    updatePaper(i, 'running', 'rendering...');
+
+    // Rasterize PDF pages to base64 images using pdf.js
+    const pdfjsLib = await loadPdfJs();
+    const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+    const images = [];
+    for (let p = 1; p <= Math.min(pdf.numPages, 20); p++) {
+      const page = await pdf.getPage(p);
+      const viewport = page.getViewport({ scale: 2.0 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      images.push(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
+    }
+
+    updatePaper(i, 'running', 'extracting...');
+
+    const content = images.map(img => ({
+      type: 'image',
+      source: { type: 'base64', media_type: 'image/jpeg', data: img }
+    }));
+    content.push({
+      type: 'text',
+      text: `Extract ALL exam questions from this Singapore past year paper.
+Paper: "${paper.name}" | Subject: ${paper.subject} | Level: ${paper.category} | Year: ${paper.year}
+
+For each question use this exact format:
+
+Q[n]: [Full question text including all sub-parts (i)(ii)(a)(b) etc]
+Marks: [X]
+Type: [MCQ / Structured / Essay]
+Source: ${paper.name}
+---
+
+Rules: exact wording only, no answers, note [Figure X referenced] where diagrams appear.`
+    });
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        messages: [{ role: 'user', content }]
+      })
+    });
+
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.content.map(c => c.text || '').join('');
+    const qCount = (text.match(/^Q\d+:/gm) || []).length;
+
+    questionCount += qCount;
+    allQuestionsText += `\n${'═'.repeat(60)}\n${paper.name}\n${'═'.repeat(60)}\n${text}\n`;
+    appendOutput(`\n${'═'.repeat(60)}\n📄 ${paper.name}\n${'═'.repeat(60)}\n${text}\n`);
+
+    doneCount++;
+    updatePaper(i, 'done', `${qCount}q`);
+    document.getElementById('statDone').textContent = doneCount;
+    document.getElementById('statQ').textContent = questionCount;
+
+  } catch(e) {
+    errCount++;
+    updatePaper(i, 'error', 'failed');
+    document.getElementById('statErr').textContent = errCount;
+    appendOutput(`\n[ERROR] ${paper.name}: ${e.message}\n`);
+  }
+
+  const done = doneCount + errCount;
+  document.getElementById('progressBar').style.width = Math.round(done / papers.length * 100) + '%';
+  document.getElementById('progressLabel').textContent = `${done} / ${papers.length} papers`;
+}
 
     updatePaper(i, 'running', 'extracting...');
 
