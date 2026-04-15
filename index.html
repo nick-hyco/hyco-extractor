@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HYCO Question Extractor</title>
+<style>
+  :root {
+    --teal: #053F47;
+    --teal-mid: #0a6070;
+    --teal-light: #e8f4f6;
+    --gold: #FFB701;
+    --gold-light: #fff8e6;
+    --sky: #8ECAE6;
+    --white: #ffffff;
+    --grey: #f4f4f4;
+    --grey-mid: #e0e0e0;
+    --grey-dark: #888;
+    --text: #1a1a1a;
+    --text-muted: #555;
+    --danger: #c0392b;
+    --danger-light: #fdecea;
+    --success: #1a7a4a;
+    --success-light: #e8f5ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: #f9f9f7; color: var(--text); min-height: 100vh; }
+
+  /* ── LOGIN ── */
+  #loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--teal);
+  }
+  .login-box {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+  }
+  .login-logo { font-size: 28px; font-weight: bold; color: var(--teal); font-family: Georgia, serif; margin-bottom: 4px; }
+  .login-logo span { color: var(--gold); }
+  .login-sub { font-size: 13px; color: var(--grey-dark); font-family: sans-serif; margin-bottom: 2rem; }
+  .login-box label { text-align: left; display: block; font-size: 12px; font-family: sans-serif; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .login-box input[type=password] {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--grey-mid); border-radius: 7px;
+    font-size: 15px; font-family: sans-serif; outline: none; margin-bottom: 1rem;
+    transition: border-color 0.15s;
+  }
+  .login-box input[type=password]:focus { border-color: var(--teal); }
+  .login-btn {
+    width: 100%; padding: 12px; background: var(--teal); color: var(--white);
+    border: none; border-radius: 7px; font-size: 15px; font-family: sans-serif;
+    font-weight: 600; cursor: pointer; transition: background 0.15s;
+  }
+  .login-btn:hover { background: var(--teal-mid); }
+  .login-btn:disabled { background: var(--grey-mid); cursor: not-allowed; }
+  .login-error { font-size: 13px; color: var(--danger); font-family: sans-serif; margin-top: 10px; min-height: 18px; }
+
+  /* ── APP ── */
+  #appScreen { display: none; }
+
+  header {
+    background: var(--teal);
+    padding: 1.1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .logo { font-size: 20px; font-weight: bold; color: var(--gold); letter-spacing: 0.05em; font-family: Georgia, serif; }
+  .logo span { color: var(--white); font-weight: 300; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+  .header-right p { color: var(--sky); font-size: 12px; font-family: sans-serif; }
+  .logout-btn {
+    padding: 5px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.3);
+    color: var(--white); border-radius: 5px; font-size: 12px; font-family: sans-serif;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .logout-btn:hover { background: rgba(255,255,255,0.1); }
+
+  main { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .card { background: var(--white); border: 1px solid var(--grey-mid); border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .card-title {
+    font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--teal); margin-bottom: 1rem; font-family: sans-serif;
+    border-bottom: 2px solid var(--gold); padding-bottom: 0.4rem; display: inline-block;
+  }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+
+  label { display: block; font-size: 12px; font-family: sans-serif; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+  select, input[type=text], input[type=number], input[type=password], textarea {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--grey-mid); border-radius: 6px;
+    font-size: 14px; font-family: sans-serif; background: var(--white); color: var(--text);
+    outline: none; transition: border-color 0.15s;
+  }
+  select:focus, input:focus, textarea:focus { border-color: var(--teal); }
+  textarea { resize: vertical; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+    border: none; border-radius: 6px; font-size: 14px; font-family: sans-serif;
+    font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-primary { background: var(--teal); color: var(--white); }
+  .btn-primary:hover { background: var(--teal-mid); }
+  .btn-primary:disabled { background: var(--grey-mid); color: var(--grey-dark); cursor: not-allowed; }
+  .btn-gold { background: var(--gold); color: var(--teal); }
+  .btn-gold:hover { background: #e6a500; }
+  .btn-outline { background: transparent; border: 1px solid var(--grey-mid); color: var(--text); }
+  .btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-danger { background: var(--danger); color: var(--white); }
+
+  .status { padding: 10px 14px; border-radius: 6px; font-size: 13px; font-family: sans-serif; margin-bottom: 1rem; display: none; }
+  .status.show { display: block; }
+  .status.info { background: var(--teal-light); color: var(--teal); border-left: 3px solid var(--teal); }
+  .status.error { background: var(--danger-light); color: var(--danger); border-left: 3px solid var(--danger); }
+  .status.success { background: var(--success-light); color: var(--success); border-left: 3px solid var(--success); }
+  .status.warning { background: var(--gold-light); color: #7a5500; border-left: 3px solid var(--gold); }
+
+  .progress-bar-bg { background: var(--grey-mid); border-radius: 99px; height: 8px; overflow: hidden; margin: 8px 0; }
+  .progress-bar { height: 100%; background: var(--gold); border-radius: 99px; transition: width 0.3s; width: 0%; }
+  .progress-label { font-size: 12px; font-family: sans-serif; color: var(--text-muted); }
+
+  .paper-list { display: flex; flex-direction: column; gap: 5px; max-height: 280px; overflow-y: auto; }
+  .paper-item { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border: 1px solid var(--grey-mid); border-radius: 6px; font-size: 13px; font-family: sans-serif; background: var(--white); }
+  .paper-item .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--grey-mid); }
+  .paper-item.running .dot { background: var(--gold); animation: pulse 1s infinite; }
+  .paper-item.done .dot { background: var(--success); }
+  .paper-item.error .dot { background: var(--danger); }
+  .paper-item.filtered .dot { background: var(--sky); }
+  .paper-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tag { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--grey); color: var(--grey-dark); flex-shrink: 0; }
+  .paper-item.done .status-tag { background: var(--success-light); color: var(--success); }
+  .paper-item.error .status-tag { background: var(--danger-light); color: var(--danger); }
+  .paper-item.filtered .status-tag { background: #e6f4fb; color: #0a4a6e; }
+
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+  .stats-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
+  .stat { flex: 1; background: var(--grey); border-radius: 8px; padding: 12px; text-align: center; }
+  .stat-num { font-size: 26px; font-weight: bold; color: var(--teal); font-family: sans-serif; }
+  .stat-label { font-size: 11px; color: var(--text-muted); font-family: sans-serif; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  #output {
+    white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 12px;
+    line-height: 1.7; background: #1a1a1a; color: #e8e8e8; border-radius: 8px;
+    padding: 1.25rem; max-height: 500px; overflow-y: auto;
+  }
+
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .divider { border: none; border-top: 1px solid var(--grey-mid); margin: 1.25rem 0; }
+  .section-label { font-size: 13px; font-family: sans-serif; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .hint { font-size: 12px; color: var(--grey-dark); font-family: sans-serif; margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">HY<span>CO</span></div>
+    <div class="login-sub">Question Extractor — Tutor Access</div>
+    <label>Password</label>
+    <input type="password" id="loginPassword" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()" />
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign in</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- APP SCREEN -->
+<div id="appScreen">
+  <header>
+    <div class="logo">HYCO <span>Question Extractor</span></div>
+    <div class="header-right">
+      <p>grail.moe bulk extraction</p>
+      <button class="logout-btn" onclick="doLogout()">Sign out</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Step 1: Config -->
+    <div class="card">
+      <div class="card-title">Step 1 — Select papers</div>
+      <div class="grid2">
+        <div>
+          <label>Category</label>
+          <select id="category">
+            <option value="GCE 'O' Levels">GCE O Levels</option>
+            <option value="GCE 'A' Levels">GCE A Levels</option>
+            <option value="IB">IB</option>
+          </select>
+        </div>
+        <div>
+          <label>Subject</label>
+          <select id="subject">
+            <option value="">All subjects</option>
+            <option value="Pure Physics">Pure Physics</option>
+            <option value="Pure Chemistry">Pure Chemistry</option>
+            <option value="Pure Biology">Pure Biology</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Biology">Biology</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Additional Mathematics">Additional Mathematics</option>
+            <option value="Economics">Economics</option>
+            <option value="Geography">Geography</option>
+            <option value="English Language">English Language</option>
+            <option value="General Paper">General Paper</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid3">
+        <div>
+          <label>Document Type</label>
+          <select id="docType">
+            <option value="Exam Papers">Exam Papers</option>
+            <option value="">All types</option>
+            <option value="Summary Notes">Summary Notes</option>
+          </select>
+        </div>
+        <div>
+          <label>Max papers</label>
+          <input type="number" id="maxPapers" value="20" min="1" max="200" />
+        </div>
+        <div>
+          <label>Concurrent (1–5)</label>
+          <input type="number" id="concurrency" value="3" min="1" max="5" />
+        </div>
+      </div>
+      <button class="btn btn-outline" onclick="fetchPaperList()">Fetch paper list</button>
+      <div id="fetchStatus" class="status" style="margin-top:0.75rem;"></div>
+    </div>
+
+    <!-- Paper list -->
+    <div class="card" id="papersCard" style="display:none;">
+      <div class="card-title">Step 2 — Extract questions</div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Papers</div></div>
+        <div class="stat"><div class="stat-num" id="statDone">0</div><div class="stat-label">Done</div></div>
+        <div class="stat"><div class="stat-num" id="statErr">0</div><div class="stat-label">Errors</div></div>
+        <div class="stat"><div class="stat-num" id="statQ">0</div><div class="stat-label">Questions</div></div>
+      </div>
+      <div id="progressWrap" style="display:none; margin-bottom:1rem;">
+        <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="progress-label" id="progressLabel">0 / 0 papers</div>
+      </div>
+      <div class="paper-list" id="paperList"></div>
+      <hr class="divider">
+      <button class="btn btn-primary" id="btnRun" onclick="runExtraction()" disabled>Extract all questions</button>
+      <div id="extractStatus" class="status" style="margin-top:0.75rem;"></div>
+    </div>
+
+    <!-- Step 3: Syllabus filter -->
+    <div class="card" id="syllabusCard" style="display:none;">
+      <div class="card-title">Step 3 — Filter by syllabus (optional)</div>
+      <div class="section-label">Paste your learning outcomes</div>
+      <textarea id="syllabusText" rows="8" placeholder="Paste your MOE syllabus learning outcomes here e.g.&#10;&#10;1. Explain ionic bonding in terms of electrostatic attraction&#10;2. Describe the properties of ionic compounds&#10;3. Draw dot-and-cross diagrams for covalent molecules&#10;..."></textarea>
+      <p class="hint">Claude will read each extracted question and tag it against these learning outcomes. Only matching questions appear in the filtered output.</p>
+      <hr class="divider">
+      <button class="btn btn-gold" id="btnFilter" onclick="filterBySyllabus()">Filter questions by syllabus</button>
+      <div id="filterStatus" class="status" style="margin-top:0.75rem;"></div>
+    </div>
+
+    <!-- Output -->
+    <div class="card" id="outputCard" style="display:none;">
+      <div class="card-title">Question bank</div>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="copyAll()">Copy all</button>
+        <button class="btn btn-outline btn-sm" onclick="downloadTxt()">Download .txt</button>
+        <button class="btn btn-outline btn-sm" id="btnShowFiltered" onclick="showFiltered()" style="display:none;">Show filtered only</button>
+        <button class="btn btn-outline btn-sm" onclick="showAll()">Show all</button>
+        <button class="btn btn-outline btn-sm btn-danger" onclick="clearOutput()">Clear</button>
+      </div>
+      <div id="output"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const GRAIL_API = 'https://api.grail.moe';
+const GRAIL_DOC = 'https://document.grail.moe';
+const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
+let API_KEY = '';
+
+let papers = [];
+let allQuestionsText = '';
+let filteredQuestionsText = '';
+let doneCount = 0, errCount = 0, questionCount = 0;
+
+// ── AUTH ──────────────────────────────────────────────
+async function doLogin() {
+  const pw = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  if (!pw) { errEl.textContent = 'Please enter a password.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Checking...';
+  errEl.textContent = '';
+
+  try {
+    const resp = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw })
+    });
+    const data = await resp.json();
+    if (resp.ok && data.success) {
+      sessionStorage.setItem('hyco_auth', '1');
+      API_KEY = data.key;
+      sessionStorage.setItem('hyco_key', data.key);
+      showApp();
+    } else {
+      errEl.textContent = 'Incorrect password. Try again.';
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
+    }
+  } catch(e) {
+    errEl.textContent = 'Connection error. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('hyco_auth');
+  sessionStorage.removeItem('hyco_key');
+  API_KEY = '';
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginBtn').textContent = 'Sign in';
+}
+
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = 'block';
+}
+
+// Check session on load
+window.addEventListener('load', () => {
+  const savedKey = sessionStorage.getItem('hyco_key');
+  if (sessionStorage.getItem('hyco_auth') === '1' && savedKey) {
+    API_KEY = savedKey;
+    showApp();
+  }
+});
+
+// ── HELPERS ───────────────────────────────────────────
+function setStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.className = 'status show ' + type;
+  el.innerHTML = msg;
+}
+
+function blobToBase64(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
+}
+
+// ── STEP 1: FETCH PAPER LIST ──────────────────────────
+async function fetchPaperList() {
+  const cat = document.getElementById('category').value;
+  const subj = document.getElementById('subject').value;
+  const dtype = document.getElementById('docType').value;
+  const max = parseInt(document.getElementById('maxPapers').value) || 20;
+
+  setStatus('fetchStatus', 'Fetching paper list from grail.moe...', 'info');
+  papers = [];
+
+  try {
+    let page = 1;
+    while (papers.length < max) {
+      const size = Math.min(50, max - papers.length);
+      let url = `${GRAIL_API}/notes/approved?page=${page}&size=${size}`;
+      if (cat) url += `&category=${encodeURIComponent(cat)}`;
+      if (subj) url += `&subject=${encodeURIComponent(subj)}`;
+      if (dtype) url += `&doc_type=${encodeURIComponent(dtype)}`;
+
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`grail.moe API returned ${resp.status}`);
+      const data = await resp.json();
+      const items = data.items || data.data || [];
+      if (!items.length) break;
+
+      for (const item of items) {
+        if (item.file_name && item.extension?.toLowerCase() === 'pdf') {
+          papers.push({
+            id: item.id,
+            name: item.document_name || item.file_name,
+            file_name: item.file_name,
+            url: `${GRAIL_DOC}/${item.file_name}`,
+            subject: item.doc_subject?.subject_name || subj || '',
+            category: item.doc_category?.category_name || cat || '',
+            year: item.year || '',
+            status: 'pending',
+          });
+        }
+        if (papers.length >= max) break;
+      }
+      if (items.length < size) break;
+      page++;
+    }
+
+    if (!papers.length) {
+      setStatus('fetchStatus', 'No PDF papers found. Try different filters.', 'error');
+      return;
+    }
+
+    renderPaperList();
+    setStatus('fetchStatus', `Found ${papers.length} papers. Click "Extract all questions" to begin.`, 'success');
+    document.getElementById('statTotal').textContent = papers.length;
+    document.getElementById('btnRun').disabled = false;
+    document.getElementById('papersCard').style.display = 'block';
+
+  } catch(e) {
+    setStatus('fetchStatus', 'Error: ' + e.message, 'error');
+  }
+}
+
+function renderPaperList() {
+  const list = document.getElementById('paperList');
+  list.innerHTML = '';
+  papers.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'paper-item pending';
+    div.id = 'paper-' + i;
+    div.innerHTML = `<div class="dot"></div>
+      <span class="paper-name">${p.name}</span>
+      ${p.year ? `<span class="tag">${p.year}</span>` : ''}
+      <span class="tag status-tag" id="tag-${i}">pending</span>`;
+    list.appendChild(div);
+  });
+}
+
+function updatePaper(i, status, label) {
+  const el = document.getElementById('paper-' + i);
+  const tag = document.getElementById('tag-' + i);
+  if (el) el.className = 'paper-item ' + status;
+  if (tag) tag.textContent = label;
+}
+
+// ── STEP 2: EXTRACT ───────────────────────────────────
+async function runExtraction() {
+  const concurrency = parseInt(document.getElementById('concurrency').value) || 3;
+  doneCount = 0; errCount = 0; questionCount = 0; allQuestionsText = '';
+
+  document.getElementById('outputCard').style.display = 'block';
+  document.getElementById('output').textContent = '';
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('btnRun').disabled = true;
+  setStatus('extractStatus', `Extracting from ${papers.length} papers (${concurrency} at a time)...`, 'info');
+
+  for (let i = 0; i < papers.length; i += concurrency) {
+    const batch = papers.slice(i, i + concurrency).map((p, j) => extractPaper(i + j, p));
+    await Promise.all(batch);
+  }
+
+  document.getElementById('syllabusCard').style.display = 'block';
+  setStatus('extractStatus', `Done — ${questionCount} questions extracted from ${doneCount} papers (${errCount} errors).`, 'success');
+  document.getElementById('btnRun').disabled = false;
+}
+
+async function extractPaper(i, paper) {
+  updatePaper(i, 'running', 'fetching...');
+  try {
+    const pdfResp = await fetch(paper.url);
+    if (!pdfResp.ok) throw new Error('PDF ' + pdfResp.status);
+    const b64 = await blobToBase64(await pdfResp.blob());
+
+    updatePaper(i, 'running', 'extracting...');
+
+    const prompt = `Extract ALL exam questions from this Singapore past year paper.
+Paper: "${paper.name}" | Subject: ${paper.subject} | Level: ${paper.category} | Year: ${paper.year}
+
+For each question use this exact format:
+
+Q[n]: [Full question text including all sub-parts (i)(ii)(a)(b) etc]
+Marks: [X]
+Type: [MCQ / Structured / Essay]
+Source: ${paper.name}
+---
+
+Rules: exact wording only, no answers, note [Figure X referenced] where diagrams appear.`;
+
+    const resp = await fetch(ANTHROPIC_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: [
+          { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: b64 } },
+          { type: 'text', text: prompt }
+        ]}]
+      })
+    });
+
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.content.map(c => c.text || '').join('');
+    const qCount = (text.match(/^Q\d+:/gm) || []).length;
+
+    questionCount += qCount;
+    allQuestionsText += `\n${'═'.repeat(60)}\n${paper.name}\n${'═'.repeat(60)}\n${text}\n`;
+
+    appendOutput(`\n${'═'.repeat(60)}\n📄 ${paper.name}\n${'═'.repeat(60)}\n${text}\n`);
+
+    doneCount++;
+    updatePaper(i, 'done', `${qCount}q`);
+    document.getElementById('statDone').textContent = doneCount;
+    document.getElementById('statQ').textContent = questionCount;
+
+  } catch(e) {
+    errCount++;
+    updatePaper(i, 'error', 'failed');
+    document.getElementById('statErr').textContent = errCount;
+    appendOutput(`\n[ERROR] ${paper.name}: ${e.message}\n`);
+  }
+
+  const done = doneCount + errCount;
+  document.getElementById('progressBar').style.width = Math.round(done / papers.length * 100) + '%';
+  document.getElementById('progressLabel').textContent = `${done} / ${papers.length} papers`;
+}
+
+// ── STEP 3: SYLLABUS FILTER ───────────────────────────
+async function filterBySyllabus() {
+  const syllabus = document.getElementById('syllabusText').value.trim();
+  if (!syllabus) { setStatus('filterStatus', 'Please paste your learning outcomes first.', 'error'); return; }
+  if (!allQuestionsText) { setStatus('filterStatus', 'No questions extracted yet. Run extraction first.', 'error'); return; }
+
+  setStatus('filterStatus', 'Filtering questions against syllabus — this may take a moment...', 'info');
+  document.getElementById('btnFilter').disabled = true;
+
+  try {
+    const prompt = `You are filtering a question bank against a syllabus.
+
+LEARNING OUTCOMES:
+${syllabus}
+
+QUESTION BANK:
+${allQuestionsText}
+
+Task: Go through every question. For each question, decide if it is relevant to at least one learning outcome above.
+
+Output ONLY the relevant questions, in this format:
+
+Q[n]: [question text]
+Marks: [X]
+Type: [type]
+Source: [source]
+LO Match: [brief description of which learning outcome it matches]
+---
+
+Skip irrelevant questions entirely. At the end, print a summary line: "TOTAL: X questions matched out of Y"`;
+
+    const resp = await fetch(ANTHROPIC_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 8192,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message);
+    filteredQuestionsText = data.content.map(c => c.text || '').join('');
+
+    document.getElementById('btnShowFiltered').style.display = 'inline-flex';
+    showFiltered();
+    setStatus('filterStatus', 'Filtering complete. Showing matched questions only.', 'success');
+
+  } catch(e) {
+    setStatus('filterStatus', 'Filter error: ' + e.message, 'error');
+  }
+
+  document.getElementById('btnFilter').disabled = false;
+}
+
+// ── OUTPUT ────────────────────────────────────────────
+function appendOutput(text) {
+  const out = document.getElementById('output');
+  out.textContent += text;
+  out.scrollTop = out.scrollHeight;
+}
+
+function showFiltered() {
+  document.getElementById('output').textContent = filteredQuestionsText || 'No filtered output yet.';
+}
+
+function showAll() {
+  document.getElementById('output').textContent = allQuestionsText || 'No questions extracted yet.';
+}
+
+function copyAll() {
+  const text = document.getElementById('output').textContent;
+  if (text) navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard.'));
+}
+
+function downloadTxt() {
+  const text = document.getElementById('output').textContent;
+  if (!text) return;
+  const subj = document.getElementById('subject').value || 'all';
+  const cat = document.getElementById('category').value.replace(/[^a-zA-Z]/g, '');
+  const isFiltered = document.getElementById('output').textContent === filteredQuestionsText;
+  const suffix = isFiltered ? '_filtered' : '_full';
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `HYCO_Questions_${cat}_${subj}${suffix}_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+}
+
+function clearOutput() {
+  document.getElementById('output').textContent = '';
+  allQuestionsText = '';
+  filteredQuestionsText = '';
+}
+</script>
+</body>
+</html>
